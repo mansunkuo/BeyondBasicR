@@ -1,0 +1,45 @@
+.level1 {
+    /*
+    overflow-x: auto;
+    overflow: auto;
+    */
+    overflow-y: auto;
+    padding: 5% 8% 0 8%;
+}
+
+.slide {
+    line-height: 1.6;
+}
+
+.slide h1 {
+    margin-bottom: 0.6em;
+}
+
+.slide p {
+    margin-bottom: 0.3em;
+}
+
+.slide ul {
+    margin-bottom: 0.3em;
+}
+
+.slide ol {
+    margin-bottom: 0.3em;
+}
+
+.slide pre {
+    margin-bottom: 0.2em;
+}
+
+.level1::after {
+    left: 95%;
+    bottom: 4%;
+}    
+
+div.sourceCode {
+    overflow-x: hidden;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: 6px 5px 1px 5px;
+    margin-bottom: 0.2em;
+}
