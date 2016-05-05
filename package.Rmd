@@ -23,6 +23,50 @@ knitr::opts_chunk$set(echo = TRUE)
 <img src="img/bali.jpg" class="cover">
 
 
+# What is inside a R package
+
+A typical R package may have following components:
+
+- R code: Source codes written in R
+- Compiled code: Compiled C, C++ or Fortran code 
+- Package metadata: Metadata such as description, dependency, author, etc. 
+- Documentation: Package and function's usage
+- Vignettes: More detailed instruction about how to use this package
+- Tests: Unit tests for functions
+- Namespace: Define what functions import/export respect to other packages
+- External data: Additional dataset in this package
+- Demo: A interface to running some demonstration R scripts
+
+
+# How to find a package you want
+
+- Google with appropriate keyword. For example:
+    - R \<algorithm name\>
+    - R \<data format\>
+    - R \<package name\>
+- Task view
+    - [Cran Task Views](https://cran.r-project.org/web/views/)
+    - [R Documentation](http://www.rdocumentation.org/)
+
+
+# Load package
+
+- *library*
+    - Load the namespace of the package with name package and attach it on the search list.
+    - Return error if package not found
+
+```{r}
+library(data.table)
+library("data.table")
+```
+
+- *require*: Just like *library* but return warning if package not found
+
+```{r}
+require(mansun)
+```
+
+
 # libPaths
 
 Libraries in R are loaded in order:
@@ -37,6 +81,14 @@ You can also add an additional library path:
 .libPaths(c("your/library/path", .libPaths()))
 ```
 
+Or change the order of library search path:
+
+```{r}
+lpath <- .libPaths()
+.libPaths(lpath[c(length(lpath), 1:max(1, length(lpath)-1))])
+.libPaths()
+```
+
 
 # Change Privilege(Windows)
 
@@ -46,3 +98,5 @@ You can also add an additional library path:
 # References
 
 - [Managing libraries](https://support.rstudio.com/hc/en-us/articles/215733837-Managing-libraries)
+- [R Packages](http://r-pkgs.had.co.nz/)
+- [package Development](https://support.rstudio.com/hc/en-us/sections/200130627-Package-Development)
