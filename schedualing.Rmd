@@ -55,7 +55,7 @@ Environment variable of R and RScript will be exported in this way.
 - **Rscript**
     - A binary front-end to execute a R script
     - Recommended 
-    - Execute a R script:
+    - Execute a R script: Just like other programming language, you can pass arguments to your R script 
 
 ```bash
 Rscript <PATH OF YOUR R SCRIPT> <ARG1> <ARG2> ...
@@ -88,6 +88,7 @@ Check permission:
 ls -l schedualing/now.R
 ```
 
+
 # Passing arguments
 
 - Function:
@@ -99,6 +100,60 @@ ls -l schedualing/now.R
     - [argparse](https://cran.r-project.org/web/packages/argparse/index.html): Analog to Python's argparse
     - [optparse](https://cran.r-project.org/web/packages/optparse/index.html): Analog to Python's optparse
 
+In most situation, I will use a package to dealing with arguments parsing.
+
+
+# now.R
+
+```r
+#!/usr/bin/env Rscript
+
+# Use argparser
+library(argparser, quietly = TRUE)
+
+# Create an arg.parser object.
+p <- arg_parser("Hi! What time it is?")
+
+# Add a positional argument
+p <- add_argument(p, arg = "who", help = "Who are you")
+
+# Add an optional argument
+# Rscript will raise a warning message if you pass with -g
+# but it doenn't matter
+p <- add_argument(p, arg = "--greeting", short = "-g", default = "How's going?", type = "character",
+                  help = "Greeting word")
+
+# Add a flag, default value is FALSE
+p <- add_argument(p, arg = "--chat", short = "-c", flag = TRUE,
+                  help = "Whether or not to have a greeting")
+
+# Parse commandArgs(trailingOnly = TRUE) into args
+args <- parse_args(p)
+
+print(args)
+str(args)
+
+# The original arguments
+command_args <- commandArgs(trailingOnly = TRUE)
+cat("args:")
+print(command_args)
+
+# Get system time
+now <- as.character(Sys.time())
+
+# Construct greeting string
+greeting <- sprintf("Hi %s! It is %s.", args$who, now)
+
+if (args$chat) {
+    greeting <-  paste(greeting, args$greeting)
+}
+
+print(greeting)
+
+# Write to a text file
+writeChar(greeting, "now.txt")
+
+```
 
 # Exercise
 
@@ -142,22 +197,26 @@ crontab [ -u user ] [ -i ] { -e | -l | -r }
     -i      (prompt before deleting user's crontab)  
 ```
 
-you may need to use some command line editor like 
-[vim](http://linux.vbird.org/linux_basic/0310vi.php)
+You may need to use some command line editor like vim
 when using *crontab -e* to edit your crontab.
+Type *select-editor* in terminal to choose your favorite editor
 
 
 # Your first crontab 
 
-- Open your terminal
-- Download our github rep under *github* directory
-- Type *select-editor* to choose your favorite editor
-- Type *crontab -e* to edit
-- Enter following text in your terminal and save it.
-  Always change to your working directory to prevent any unexpected error.
+- Download [our github repository](https://github.com/mansunkuo/BeyondBasicR) under *github* directory
+- Make sure your library *argparser* are installed systemwide.
+- Open [crontab.txt](schedualing/crontab.txt). Edit it as your full path and save it.
+  Always change directory to your working directory to prevent unexpected error.
 
 ```bash
+# Execute every minutes 
 * * * * * cd /home/mansun/github/BeyondBasicR/schedualing; ./now.R Mansun
+```
+- Open your terminal and enter following command
+
+```
+crontab schedualing/crontab.txt
 ```
 
 - Type *crontab -l* to check your crontab:
@@ -167,11 +226,7 @@ crontab -l
 ```
 
 
-# Configuration file
-
-Please refer to 
-[Cron](https://en.wikipedia.org/wiki/Cron)
-For more information.
+# Configure your cron job
 
 ```
 ┌───────────── min (0 - 59) 
@@ -180,12 +235,35 @@ For more information.
 │ │ │ ┌──────────────── month (1 - 12)
 │ │ │ │ ┌───────────────── day of week (0 - 6) (0 to 6 are Sunday to Saturday)
 │ │ │ │ │
-│ │ │ │ │
 * * * * *  command to execute
 ```
 
+- Comments begin with a comment mark **#**
+- Separate items of a list with **Comma(,)**.
+
+```
+# Execute at 00:00 and 12:00 everyday
+0 0,12 * * *  command to execute
+```
+
+- Define ranges with **Hyphen(\-)**
+
+```
+# Execute at 06:00 every Monday to Friday
+0 6 * * 1-5  command to execute
+```
+
+Please refer to 
+[Cron](https://en.wikipedia.org/wiki/Cron)
+For further information.
+
 
 # Task Schedualer(Windows)
+
+Launch task scheduler on Windows:
+
+1. Press **Windows Logo+R** to run dialog box
+2. Enter *control schedtasks*
 
 Launch task schedualer within RStudio:
 
@@ -194,17 +272,23 @@ Launch task schedualer within RStudio:
 system("control schedtasks")
 ```
 
-# Samples
+
+# Set trigger
+
+<img src="img/trigger.png" width="100%">
 
 
-
-# Set a task
+# Set job
 
 <img src="img/taskscheduler.png" width="100%">
+
+
+# Exercise 
+
+Set a schedualing job on your environment
 
 
 # References
 
 - [cron](https://en.wikipedia.org/wiki/Cron)
 - [Scheduling R Tasks via Windows Task Scheduler](https://trinkerrstuff.wordpress.com/2015/02/11/scheduling-r-tasks-via-windows-task-scheduler/)
-- [Managing libraries](https://support.rstudio.com/hc/en-us/articles/215733837-Managing-libraries)

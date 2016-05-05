@@ -1,0 +1,2 @@
+# Execute every minutes 
+* * * * * cd /home/mansun/github/BeyondBasicR/schedualing; ./now.R Mansun

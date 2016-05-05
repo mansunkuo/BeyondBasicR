@@ -44,4 +44,3 @@ print(greeting)
 
 # Write to a text file
 writeChar(greeting, "now.txt")
-# writeLines(greeting, "now.txt")

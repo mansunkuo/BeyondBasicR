@@ -30,34 +30,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # What is in this lecture
 
-A cookbook-style guide of some additional knowledge for using R as your data manipulation and  web scraping tool.
- 
+Some additional knowledge and handy packages for using R as your data manipulation and web scraping tool
+
 
 # Outline
 
-- Package (15 min)
+- Package (20 min)
     - How to find a package on internet
     - Various way to install a package(Cran, Github and more) 
     - How to read package manual
 - magrittr (10 min)
     - Play with magrittr
-- Data I/O(25 min)
-    - Tabular input
-    - JSON
-    - Databases(SQLite)
-    
-# 
-
-- Schedualing(40 min)
-    - Task Scheduler(Windows)
-    - Crontab(Linux/Mac)
-
 - data.table (60 min)
     - Concept of data.table
     - How to read data with data.table
     - Slicing, filtering and aggregation 
     - Deep copy and shallow copy
     - Sort and merge data
+
+# 
+
+- Data I/O(30 min)
+    - Tabular input
+    - JSON
+    - Databases(SQLite)
+- Schedualing(30 min)
+    - Task Scheduler(Windows)
+    - Crontab(Linux/Mac)
 
 
 ```{r child = 'package.Rmd'}
