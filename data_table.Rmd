@@ -1,0 +1,456 @@
+---
+title: "R Basic - 201605"
+author: "`r Sys.Date()`<br><p style='color:royalblue'>[Mansun Kuo](https://tw.linkedin.com/pub/mansun-kuo/82/3b4/344)</p>"
+date: '`r Sys.Date()`'
+#ratio: 4x3
+ratio: 16x10
+output: 
+  rmdshower::shower:
+    self_contained: true
+    katex: false
+    theme: material
+    css: css/shower.css
+params:
+  refresh: no
+---
+
+```{r include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(warning = TRUE,
+                      echo = TRUE,
+                      message = TRUE,
+                      fig.align='center',
+                      cache=FALSE)
+```
+
+
+# <br><br>data.table {.white}
+
+<img src="img/bali.jpg" class="cover">
+
+
+
+# Objective
+
+<div class="columns-2">
+
+Using hourly
+[weather data](http://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp)
+from 2012-08-15 to 2015-08-14 to illustrate features of data.table.
+
+Special symbols in this data:
+
+- T: trace amount of precipitation
+- x: instrument error
+- V: wind direction is uncertain
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+<img src="img/cwb.png" width=400 height=400>
+
+</div>
+
+```{r include=FALSE}
+library(data.table)
+```
+
+
+# Installation
+
+Here we use data.table v1.9.5
+
+```r
+devtools::install_github("Rdatatable/data.table")
+library(data.table)
+```
+
+# What is data.table
+
+- An enhanced version of data.frames
+- Optimize most heavy works in C
+- Minimize redundant copies
+
+
+# Why data.table
+
+- Speed
+- Automatically optimization
+- Total solution for ETL
+- Concise syntax
+
+
+# Benchmarks
+
+[Benchmarks : Grouping](https://github.com/Rdatatable/data.table/wiki/Benchmarks-%3A-Grouping)
+
+<div class="code_block">
+
+<img src="img/benchmark.png">
+
+</div>
+
+
+# General Form
+
+**DT[i, j, by]**
+
+R:     i       j               by
+----- ------- --------------- -----------  
+SQL:   where   select/update   group by
+----- ------- --------------- -----------
+
+<br>
+
+Take **DT**, subset rows using *i*, then calculate *j*, grouped by *by*.
+
+
+# Get data
+
+- **fread**: read text file into data.table
+- **:=**: add/remove/update a column by reference.
+- **rbindlist**: Same as do.call("rbind", l) on data.frames, but faster.
+
+
+```{r}
+filepaths = list.files("data/daily", full.names = TRUE)
+locations = gsub("data\\/daily\\/|_....-..-..\\.csv", "", filepaths)
+dates = gsub("data\\/daily\\/.*_|\\.csv", "", filepaths)
+weather = list()
+for (i in 1:length(filepaths)) {
+    weather[[i]] = fread(filepaths[i])
+    weather[[i]][, city := locations[i]]
+    weather[[i]][, date := dates[i]]
+}
+weather = rbindlist(weather)
+```
+
+
+# data.table is a data.frame, too
+
+You can use data.table with any function that suitable for data.frame.
+
+```{r}
+class(weather)
+```
+
+
+# Benckmark: read data {.smaller} 
+
+<div class="columns-2">
+```{r}
+get_dt = function() {
+    dt = list()
+    for (i in 1:length(filepaths)) {
+        dt[[i]] = fread(filepaths[i])
+        dt[[i]][, city := locations[i]]
+        dt[[i]][, date := dates[i]]
+    }
+    rbindlist(dt)
+}
+```
+
+
+```{r}
+get_df = function() {
+    df = list()
+    for (i in 1:length(filepaths)) {
+        df[[i]] = read.csv(filepaths[i])
+        df[[i]]$city = locations[i]
+        df[[i]]$date = dates[i]
+    }
+    do.call(rbind, df)
+}
+```
+</div>
+
+Here we use rbenchmark to test above two functions
+
+```{r read_benchmark, cache=TRUE}
+library(rbenchmark)
+within(benchmark(get_dt(), get_df(), replications = 3, 
+                 columns=c('test', 'replications', 'elapsed', "relative")),
+       { average = elapsed/replications })
+```
+
+
+# Generate datetime
+
+Here we use lubridate::ymd_h to generate datetime.
+The warning message is due to the 
+[missing data of Kaohsiung in 2015-06-24](http://e-service.cwb.gov.tw/HistoryDataQuery/DayDataController.do?command=viewMain&station=467440&datepicker=2015-06-24)
+
+<div class=code_block>
+```{r}
+weather[,datetime := lubridate::ymd_h(paste(date, ObsTime), tz = "CST")]
+weather[is.na(datetime)]
+weather = weather[!is.na(datetime),]
+str(weather)
+```
+</div>
+
+
+# Strip numeric columns
+
+- **.SD**: **S**ubset of **D**ata.table. It's a data table that holds the data for the current group defined using *by*. 
+- **.SDcols** specifies the columns that returned in .SD.
+
+```{r}
+numeric_cols = colnames(weather)[!colnames(weather) %in% c("city", "date", "datetime")]
+weather[, c(numeric_cols) := (lapply(.SD, function(x){gsub("[^0-9.TxV]", "", x)})), 
+        .SDcols = numeric_cols]
+```
+
+
+# Deal with special symbols
+
+You can update partial cells in a data.table.
+
+```{r}
+# Check which numeric columns contain special symbols
+weather[, lapply(.SD, function(x){sum(grepl("^[TxV]$", x), na.rm = FALSE)}), 
+        .SDcol = numeric_cols]
+weather[WD == "V", WD := ""]
+weather[Precp == "T", Precp := "0"]
+```
+
+
+# More data manipulation
+
+- **:=** also can modify multiple columns by reference in a functional way 
+
+```{r}
+weather[, `:=`(month = substr(date, 6, 7),
+               isRain = Precp > 0
+               )]
+weather[, c(numeric_cols) := (lapply(.SD, as.numeric)), .SDcols = numeric_cols]
+weather[, date := as.Date(date)]
+```
+
+
+# Select columns
+
+- **.** is an abbreviation of list within data.table 
+- Because j handle expressions, you need to set **with = FALSE** when slicing with character vector
+
+```{r}
+# Select columns with list
+ws = weather[, .(city, datetime, Temperature, Tddewpoint)]
+
+# Select columns with character vector
+attrs = c("city", "datetime", "Temperature", "Tddewpoint")
+ws2 = weather[, attrs, with = FALSE]
+identical(ws, ws2)
+```
+
+
+# Hottest date and Temperature in each city
+
+- You can use **by** to summarize by each group. **keyby** will add key automatically.
+- **.N**: returns the number of rows in the subset.
+
+```{r}
+hottest = ws[, .(datetime, Temperature, T.Max = max(Temperature)), keyby = city]
+hottest = hottest[, count := .N]
+hottest = hottest[Temperature == T.Max, 
+                  head(.SD[, .(T.Max, datetime)], 3), # output top 3 to check ties 
+                  by = city]
+hottest
+```
+
+
+# Hottest date and Temperature in each city - 2
+
+- chaining: **DT[ ... ][ ... ][ ... ]**
+    
+    Avoid intermediate assignment.
+    
+```{r}
+hottest2 = ws[, .(datetime, Temperature, T.Max = max(Temperature)), keyby = city
+              ][, count := .N
+                ][Temperature == T.Max, 
+                  head(.SD[, .(T.Max, datetime)], 3), # output top 3 to check ties 
+                  by = city]
+key(hottest2)
+identical(hottest, hottest2)
+```
+
+
+# Get Complete dataset
+
+- **CJ**: **C**ross **J**oin. Generate a data.table from the cross product of the vectors.
+- **setnames**: Set attributes of data.table by reference.
+
+```{r}
+# cj = CJ(ws$city, ws$datetime, unique = TRUE)  # don't use POSIXct in CJ
+cj = CJ(ws$city, as.character(ws$datetime), unique = TRUE)[
+    , V2 := lubridate::ymd_hms(V2, tz = "CST")]
+setnames(cj, names(cj), c("city", "datetime"))
+ws = merge(cj, ws, all.x = TRUE, all.y = FALSE, by = c("city", "datetime"))
+ws[, date := as.character(datetime)][,
+    `:=`(date = as.Date(substr(date, 1, 10)),
+         year = substr(date, 1, 4),
+         month = substr(date, 6, 7),
+         hour = substr(date, 12, 13))]
+```
+
+
+# Get Complete dataset - 2
+
+<div class="code_block">
+```{r}
+ws[city == "Kaohsiung" & date == as.Date("2015-06-24"), ]
+```
+</div>
+
+
+# Interpolate NA with mean 
+
+- We can subset row by a particular columns after assiggn it as a key with **setkey**.
+- **set** is used to repeatedly update rows and columns by reference.
+
+```{r}
+inter_mean = ws[year == "2015" & month == "06" & city == "Kaohsiung",
+                .(meanT = mean(Temperature, na.rm = TRUE),
+                  meanTd = mean(Tddewpoint, na.rm = TRUE)),
+                by = hour]
+setkey(inter_mean, hour)
+Tj = which(colnames(ws) == "Temperature")
+Tdj = which(colnames(ws) == "Tddewpoint")
+for (i in which(is.na(ws$Temperature))) {
+    set(ws, i, Tj, inter_mean[ws[i, hour], meanT])
+    set(ws, i, Tdj, inter_mean[ws[i, hour], meanTd])
+}
+```
+
+
+# Interpolate NA with mean -2
+
+<div class="code_block">
+```{r}
+ws[city == "Kaohsiung" & date == as.Date("2015-06-24"), ]
+```
+</div>
+
+
+# Compute regression coefficient in each city
+
+In this example, all values are concatenate into single column.
+
+```{r}
+ws[, .(coef(lm(Tddewpoint ~ Temperature))), by = city]
+```
+
+
+# Compute regression coefficient in each city - 2
+
+As long as j returns a list, each element of the list will become a column in the resulting data.table.
+
+```{r}
+ws[, as.list(coef(lm(Tddewpoint ~ Temperature))), by = city]
+```
+
+
+# Sort  
+
+Sort Temperature in ascending and Tddewpoint in descending 
+
+- **order** in data.table acts just like base::order, but faster. 
+- **-** means decending.
+
+```{r}
+ws[order(Temperature, -Tddewpoint)]
+```
+
+
+# Benckmark: order {.smaller} 
+
+<div class="columns-2">
+```{r}
+order_dt = function(ws) {
+    ws[order(city, datetime)]
+    ws[order(Temperature, -Tddewpoint)]
+}
+```
+
+```{r}
+order_base = function(ws) {
+    ws[base::order(city, datetime)]
+    ws[base::order(Temperature, -Tddewpoint)]
+}
+```
+</div>
+
+Here we use rbenchmark to test above two functions
+
+```{r order_benchmark, cache=TRUE}
+within(benchmark(order_dt_out <- order_dt(ws), 
+                 order_base_out <- order_base(ws), 
+                 replications = 10, 
+                 columns=c('test', 'replications', 'elapsed', "relative")),
+       { average = elapsed/replications })
+identical(order_dt_out, order_base_out)
+```
+
+
+# copy
+
+**:=** and **set\*** modify the data.table by references.
+You can use *copy* to do a deep copy to avoid side effect(modify a object within a function).
+
+<div class="columns-2">
+```{r}
+deepf = function(dt) {
+    dt = copy(dt)
+    dt[, city := substr(city, 1, 1)]
+}
+deepf(hottest2)
+hottest2
+```
+
+```{r}
+shallowf = function(dt) {
+    dt[, city := substr(city, 1, 1)]
+}
+shallowf(hottest2)
+hottest2
+```
+<div>
+
+
+# melt.data.table
+
+data.table implement melt in reshape2. Additionally, you can use regular expression with patterns to melt multiple columns.
+
+```{r}
+melted = melt.data.table(weather, 
+                         id.vars = c("city", "datetime"),
+                         measure = patterns(".*Pres", "Precp"),
+                         value.name = c("Pres", "Precp")
+                         )
+melted[c(1,2,.N-1,.N),]
+```
+
+
+# dcast.data.table
+
+You can also use dcast with data.table.
+Furthermore, you can cast multiple value.vars simultaneously.
+
+```{r}
+dcasted = dcast.data.table(melted, city + datetime ~ variable,
+                           value.var = c("Pres", "Precp"))
+dcasted[c(1,2,.N-1,.N),]
+``` 
+ 
+
+# References
+
+- [data.table wiki - Getting started](https://github.com/Rdatatable/data.table/wiki/Getting-started)
+- [The data.table Cheat Sheet](http://www.r-bloggers.com/the-data-table-cheat-sheet/)
+- [Data Analysis in R, the data.table Way](https://www.datacamp.com/courses/data-table-data-manipulation-r-tutorial)
+- [Benchmarks : Grouping](https://github.com/Rdatatable/data.table/wiki/Benchmarks-%3A-Grouping)

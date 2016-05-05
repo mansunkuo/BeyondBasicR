@@ -1,0 +1,23 @@
+---
+title: "magrittr"
+author: "`r Sys.Date()`<br><p style='color:royalblue'>[Mansun Kuo](https://tw.linkedin.com/pub/mansun-kuo/82/3b4/344)</p>"
+date: '`r Sys.Date()`'
+#ratio: 4x3
+ratio: 16x10
+output: 
+  rmdshower::shower:
+    self_contained: true
+    katex: false
+    theme: material
+    css: css/shower.css
+params:
+  refresh: no
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# <br><br>magrittr {.white}
+
+<img src="img/bali.jpg" class="cover">

@@ -14,7 +14,7 @@ params:
   refresh: no
 ---
 
-```{r setup, include=FALSE}
+```{r include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -24,8 +24,14 @@ knitr::opts_chunk$set(echo = TRUE)
 <img src="img/bali.jpg" class="cover">
 
 <p class="white">
+`r Sys.Date()`<br><p style='color:royalblue'>[Mansun Kuo](https://tw.linkedin.com/pub/mansun-kuo/82/3b4/344)</p>
 </p>
 
+
+# What is in this lecture
+
+A cookbook-style guide of some additional knowledge for using R as your data manipulation and  web scraping tool.
+ 
 
 # Outline
 
@@ -33,284 +39,38 @@ knitr::opts_chunk$set(echo = TRUE)
     - How to find a package on internet
     - Various way to install a package(Cran, Github and more) 
     - How to read package manual
+- magrittr (10 min)
+    - Play with magrittr
 - Data I/O(25 min)
     - Tabular input
     - JSON
     - Databases(SQLite)
-- magrittr (10 min)
-    - Play with magrittr
-- data.table (80 min)
+    
+# 
+
+- Schedualing(40 min)
+    - Task Scheduler(Windows)
+    - Crontab(Linux/Mac)
+
+- data.table (60 min)
     - Concept of data.table
     - How to read data with data.table
     - Slicing, filtering and aggregation 
     - Deep copy and shallow copy
     - Sort and merge data
-- Schedualing(20 min)
-    - Task Scheduler(Windows)
-    - Crontab(Linux/Mac)
-- R Learning Resource
-    - datacamp, tryR
-    - Coursera JohnsHopkins, Udacity Data Analysis with R, Nanodegree...
-    - Adv.R
 
 
-# <br><br>Package {.white}
-
-<img src="img/bali.jpg" class="cover">
-
-
-# libPaths
-
-Libraries in R are loaded in order:
-
-```{r}
-.libPaths()
+```{r child = 'package.Rmd'}
 ```
 
-You can also add an additional library path:
-
-```r
-.libPaths(c("your/library/path", .libPaths()))
+```{r child = 'magrittr.Rmd'}
 ```
 
-
-# Change Privilege(Windows)
-
-<img src="img/change_privilege.png" width="100%">
-
-
-
-# <br><br>Data I/O {.white}
-
-<img src="img/bali.jpg" class="cover">
-
-
-# <br><br>magrittr {.white}
-
-<img src="img/bali.jpg" class="cover">
-
-
-# <br><br>data.table {.white}
-
-<img src="img/bali.jpg" class="cover">
-
-
-# <br><br>Schedualing {.white}
-
-<img src="img/bali.jpg" class="cover">
-
-
-# Task Schedualing in R
-
-Sometime you may need to execute your R script periodically and automatically: 
-
-- **Regular Report**: Generate monthly/daily report automatically
-- **Crawler**: Get latest data every hour
-- **Forecasting System**: Rebuild your preditive model with latest data
-
-
-# Steps to Schedualing
-
-1. Invoking a batch job of R
-    - RScript
-    - R CMD BATCH
-2. Passing arguments to R
-3. A schedualer:
-    - Linux/Mac: Crontab
-    - Windows: Task Schedualer
-    
-
-# Open shell with RStudio
-
-Environment variable of R and RScript will be exported in this way.
-
-<img src="img/shell.png" width="800">
-
-
-# Invoke a batch job
-
-- **Rscript**
-    - A binary front-end to execute a R script
-    - Recommended 
-    - Execute a R script:
-
-```bash
-Rscript <PATH OF YOUR R SCRIPT> <ARG1> <ARG2> ...
+```{r child = 'dataio.Rmd'}
 ```
 
-- **R CMD BATCH**
-    - Run R in batch mode
-    - I never use this one since I use Rscript
-
-
-# Shebang
-
-If you use Linux or Mac, you can execute a R script directly with
-[shebang](https://en.wikipedia.org/wiki/Shebang_(Unix))
-and permission of execution.
-
-```r
-#!/usr/bin/env Rscript
+```{r child = 'data_table.Rmd', eval=FALSE, include=FALSE}
 ```
 
-Add permission of execution:
-
-```{r engine='bash', echo=TRUE}
-chmod u+x schedualing/now.R
+```{r child = 'schedualing.Rmd'}
 ```
-
-Check permission:
-
-```{r engine='bash', echo=TRUE}
-ls -l schedualing/now.R
-```
-
-# Passing arguments
-
-- Function:
-    - **commandArgs**: a function to access command line arguments
-
-- Package:
-    - [argparser](https://cran.r-project.org/web/packages/argparser/index.html): Command-line argument parser written purely in R
-    - [ArgParser](https://github.com/everdark/ArgParser): a command line argument parser for R from Kyle
-    - [argparse](https://cran.r-project.org/web/packages/argparse/index.html): Analog to Python's argparse
-    - [optparse](https://cran.r-project.org/web/packages/optparse/index.html): Analog to Python's optparse
-
-
-# Exercise
-
-Let's try to pass some arguments to [schedualing/now.R](schedualing/now.R): 
-
-Get help:
-
-```bash
-schedualing/now.R -h
-```
-
-Pass a positional argument:
-
-```bash
-schedualing/now.R Mansun
-```
-
-Add a flag *-c*:
-
-```bash
-schedualing/now.R Mansun -c
-```
-
-Add a optional argument:
-
-```bash
-schedualing/now.R Mansun -c -g "How are you?"
-```
-
-
-# Crontab(Linux/Mac)
-
-Maintain crontab files to execute scheduled commands in Unix-like OS for individual users.
-
-```
-crontab [-u user] file  
-crontab [ -u user ] [ -i ] { -e | -l | -r }  
-    -e      (edit user's crontab)  
-    -l      (list user's crontab)  
-    -r      (delete user's crontab)  
-    -i      (prompt before deleting user's crontab)  
-```
-
-you may need to use some command line editor like 
-[vim](http://linux.vbird.org/linux_basic/0310vi.php)
-when using *crontab -e* to edit your crontab.
-
-
-# Your first crontab 
-
-- Open your terminal
-- Download our github repo
-
-```bash
-cd; mkdir github; cd github;
-
-```
-
-- Type *select-editor* to choose your favorite editor
-- Type *crontab -e* to edit
-- Enter following text in your terminal and save:
-
-```bash
-* * * * * cd /home/mansun/github/BeyondBasicR/schedualing; ./now.R Mansun
-```
-
-- Type *crontab -l* to check your crontab:
-
-```{r engine='bash'}
-crontab -l
-```
-
-
-#
-
-```
-┌───────────── min (0 - 59) 
-│ ┌────────────── hour (0 - 23)
-│ │ ┌─────────────── day of month (1 - 31)
-│ │ │ ┌──────────────── month (1 - 12)
-│ │ │ │ ┌───────────────── day of week (0 - 6) (0 to 6 are Sunday to Saturday)
-│ │ │ │ │
-│ │ │ │ │
-* * * * *  command to execute
-```
-
-
-
-
-
-- _*_: 
-
-
-
-
-# Tables
-
-|                   |  mpg  |  cyl  |  disp  |  hp  |
-|:-----------------:|:-----:|:-----:|:------:|:----:|
-|     Mazda RX4     | 21    |   6   |  160   | 110  |
-|   Mazda RX4 Wag   | 21    |   6   |  160   | 110  |
-|    Datsun 710     | 22.8  |   4   |  108   |  93  |
-|   Hornet 4 Drive  | 21.4  |   6   |  258   | 110  |
-| Hornet Sportabout | 18.7  |   8   |  360.0 | 175  |
-|       Valiant     | 18.1  |   6   |  225.0 | 105  |
-|      Duster 360   | 14.3  |   8   |  360.0 | 245  |
-
-
-
-
-# Task Schedualer(Windows)
-
-Launch task schedualer within RStudio:
-
-```r
-# Execute a system conmmand to launch task schedualer
-system("control schedtasks")
-```
-
-# Samples
-
-
-
-# Set a task
-
-<img src="img/taskscheduler.png" width="100%">
-
-
-# <br><br>References {.white}
-
-<img src="img/bali.jpg" class="cover">
-
-
-# References
-
-- [cron](https://en.wikipedia.org/wiki/Cron)
-- [Scheduling R Tasks via Windows Task Scheduler](https://trinkerrstuff.wordpress.com/2015/02/11/scheduling-r-tasks-via-windows-task-scheduler/)
-- [Managing libraries](https://support.rstudio.com/hc/en-us/articles/215733837-Managing-libraries)
