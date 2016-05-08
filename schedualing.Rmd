@@ -39,8 +39,9 @@ Sometime you may need to execute your R script periodically and automatically:
     - R CMD BATCH
 2. Passing arguments to R
 3. A schedualer:
-    - Linux/Mac: Crontab
     - Windows: Task Schedualer
+    - Linux/Mac: Crontab
+    
     
 
 # Open shell with RStudio
@@ -103,85 +104,72 @@ ls -l schedualing/now.R
 In most situation, I will use a package to dealing with arguments parsing.
 
 
-# now.R
-
-```r
-#!/usr/bin/env Rscript
-
-# Use argparser
-library(argparser, quietly = TRUE)
-
-# Create an arg.parser object.
-p <- arg_parser("Hi! What time it is?")
-
-# Add a positional argument
-p <- add_argument(p, arg = "who", help = "Who are you")
-
-# Add an optional argument
-# Rscript will raise a warning message if you pass with -g
-# but it doenn't matter
-p <- add_argument(p, arg = "--greeting", short = "-g", default = "How's going?", type = "character",
-                  help = "Greeting word")
-
-# Add a flag, default value is FALSE
-p <- add_argument(p, arg = "--chat", short = "-c", flag = TRUE,
-                  help = "Whether or not to have a greeting")
-
-# Parse commandArgs(trailingOnly = TRUE) into args
-args <- parse_args(p)
-
-print(args)
-str(args)
-
-# The original arguments
-command_args <- commandArgs(trailingOnly = TRUE)
-cat("args:")
-print(command_args)
-
-# Get system time
-now <- as.character(Sys.time())
-
-# Construct greeting string
-greeting <- sprintf("Hi %s! It is %s.", args$who, now)
-
-if (args$chat) {
-    greeting <-  paste(greeting, args$greeting)
-}
-
-print(greeting)
-
-# Write to a text file
-writeChar(greeting, "now.txt")
-
-```
-
 # Exercise
 
+Please download [our github repository](https://github.com/mansunkuo/BeyondBasicR) under *github* directory.
 Let's try to pass some arguments to [schedualing/now.R](schedualing/now.R): 
 
 Get help:
 
 ```bash
-schedualing/now.R -h
+Rscript schedualing/now.R -h
 ```
 
 Pass a positional argument:
 
 ```bash
-schedualing/now.R Mansun
+Rscript schedualing/now.R Mansun
 ```
 
 Add a flag *-c*:
 
 ```bash
-schedualing/now.R Mansun -c
+Rscript schedualing/now.R Mansun -c
 ```
 
 Add a optional argument:
 
 ```bash
-schedualing/now.R Mansun -c -g "How are you?"
+Rscript schedualing/now.R Mansun -c -g "How are you?"
 ```
+
+
+# now.R
+
+
+```{r results='asis', echo=FALSE}
+catfile = "schedualing/now.R"
+cat("```r",
+    readChar(catfile, nchars = file.info(catfile)$size),
+    "```",
+    sep = "\n"
+    )
+```
+
+
+# Task Schedualer(Windows)
+
+Launch task scheduler on Windows:
+
+1. Press **Windows Logo+R** to run dialog box
+2. Enter *control schedtasks*
+
+Launch task schedualer within RStudio:
+
+```r
+# Execute a system conmmand to launch task schedualer
+system("control schedtasks")
+```
+
+
+# Set trigger
+
+<img src="img/trigger.png" width="100%">
+
+
+# Set job
+
+<img src="img/taskscheduler.png" width="100%">
 
 
 # Crontab(Linux/Mac)
@@ -255,37 +243,12 @@ crontab -l
 
 Please refer to 
 [Cron](https://en.wikipedia.org/wiki/Cron)
-For further information.
-
-
-# Task Schedualer(Windows)
-
-Launch task scheduler on Windows:
-
-1. Press **Windows Logo+R** to run dialog box
-2. Enter *control schedtasks*
-
-Launch task schedualer within RStudio:
-
-```r
-# Execute a system conmmand to launch task schedualer
-system("control schedtasks")
-```
-
-
-# Set trigger
-
-<img src="img/trigger.png" width="100%">
-
-
-# Set job
-
-<img src="img/taskscheduler.png" width="100%">
+for further information.
 
 
 # Exercise 
 
-Set a schedualing job on your environment
+Set a schedualing job on your favorite OS.
 
 
 # References

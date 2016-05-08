@@ -12,7 +12,8 @@ p <- add_argument(p, arg = "who", help = "Who are you")
 # Add an optional argument
 # Rscript will raise a warning message if you pass with -g
 # but it doenn't matter
-p <- add_argument(p, arg = "--greeting", short = "-g", default = "How's going?", type = "character",
+p <- add_argument(p, arg = "--greeting", short = "-g", 
+                  default = "How's going?", type = "character",
                   help = "Greeting word")
 
 # Add a flag, default value is FALSE

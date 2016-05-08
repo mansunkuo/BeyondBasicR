@@ -47,6 +47,7 @@ A typical R package may have following components:
 - Task view
     - [Cran Task Views](https://cran.r-project.org/web/views/)
     - [R Documentation](http://www.rdocumentation.org/)
+- [R-blogger](http://www.r-bloggers.com/) for latest R news
 
 
 # Load package
@@ -64,6 +65,23 @@ library("data.table")
 
 ```{r}
 require(mansun)
+```
+
+
+# Location of libraries
+
+- User specific library: *R_LIBS_USER*
+    - Libraries under user's home directory
+    - Only can be accessed by the user in most situation.
+
+- Common library: libraries for all users. Need administrator permissoion.
+    - System library: *R_HOME/library*
+        - Comes with R installation
+    - Site library: 
+        - Configured in *R_HOME/etc/Rprofile.site*
+
+```{r}
+Sys.getenv(c("R_LIBS_USER", "R_HOME"))
 ```
 
 
@@ -95,8 +113,97 @@ lpath <- .libPaths()
 <img src="img/change_privilege.png" width="100%">
 
 
+# Change Privilege(Linux/Mac)
+
+- [chown](https://en.wikipedia.org/wiki/Chown): Change owner
+
+
+```bash
+chown mansun:mansun /usr/local/lib/R/site-library
+```
+
+- [chmod](https://en.wikipedia.org/wiki/Chmod): Change permission of access
+
+```bash
+chmod u+w /usr/local/lib/R/site-library
+```
+
+
+# Where can you find a R package 
+
+- [CRAN](https://cran.r-project.org/): Official R package
+- [GitHub](https://github.com/): The most popular web-based git repository hosting service
+- [Bitbucket](https://bitbucket.org/): Also a git repository hosting service
+- [R-Forge](https://r-forge.r-project.org/): Another CRAN-like website to access package
+- [Bioconductor](https://www.bioconductor.org/): Specific for biostatistician
+
+
+# Install from CRAN
+
+- [install.packages](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/install.packages.html)
+    - Download and install packages from CRAN-like repositories or from local files
+    - Type *? install.packages* to get further information
+    - Packages are installed in the first element of *.libpaths()* if *lib* ins missing 
+    - In RStudio: Tools -> Install Packages...
+    - Be careful of system dependency
+        - [Rtools](https://cran.r-project.org/bin/windows/Rtools/)(Windows), Java, XML, MySQL, ...
+
+Install multiple files: 
+
+```r
+install.packages(c("argparser", "jsonlite"), 
+    lib = "/usr/local/lib/R/site-library")
+```
+
+
+Install development version of data.table:
+
+```r
+install.packages("data.table", type = "source",
+    repos = "https://Rdatatable.github.io/data.table")
+```
+
+
+# Install a local files
+
+You can also install a local tarball:
+
+```r
+install.packages("/tmp/Rtmp99mvkt/downloaded_packages/argparser_0.4.tar.gz", 
+    lib = "/usr/local/lib/R/site-library", repo = NULL, type = "source")
+```
+
+
+# Install from github
+
+Using *devtools::install_github* can easily install any R package on GitHub: 
+
+To install [devtools](https://www.rstudio.com/products/rpackages/devtools/) make sure you have:
+    
+- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
+- [Xcode command line tools](https://developer.apple.com/downloads) for Mac
+- *r-devel* or *r-base-dev* on Linux
+
+Then:
+
+```r
+install.packages("devtools")
+```
+
+Now you can install any package on github with single command:
+
+```r
+devtools::install_github('Rdatatable/data.table')
+```
+
+Just take a look what happened when you execute above command.
+
 # References
 
 - [Managing libraries](https://support.rstudio.com/hc/en-us/articles/215733837-Managing-libraries)
+- [Initialization at Start of an R Session](https://stat.ethz.ch/R-manual/R-devel/library/base/html/Startup.html)
 - [R Packages](http://r-pkgs.had.co.nz/)
 - [package Development](https://support.rstudio.com/hc/en-us/sections/200130627-Package-Development)
+
+
+

@@ -39,8 +39,6 @@ Some additional knowledge and handy packages for using R as your data manipulati
     - How to find a package on internet
     - Various way to install a package(Cran, Github and more) 
     - How to read package manual
-- magrittr (10 min)
-    - Play with magrittr
 - data.table (60 min)
     - Concept of data.table
     - How to read data with data.table
@@ -54,15 +52,12 @@ Some additional knowledge and handy packages for using R as your data manipulati
     - Tabular input
     - JSON
     - Databases(SQLite)
-- Schedualing(30 min)
+- Schedualing(40 min)
     - Task Scheduler(Windows)
     - Crontab(Linux/Mac)
 
 
 ```{r child = 'package.Rmd'}
-```
-
-```{r child = 'magrittr.Rmd'}
 ```
 
 ```{r child = 'dataio.Rmd'}
