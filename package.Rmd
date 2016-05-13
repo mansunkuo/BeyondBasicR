@@ -58,8 +58,8 @@ A typical R package may have following components:
     - Return error if package not found
 
 ```{r}
-library(data.table)
-library("data.table")
+library(jsonlite)
+library("jsonlite")
 ```
 
 - *require*: Just like *library* but return warning if package not found
@@ -67,6 +67,24 @@ library("data.table")
 ```{r}
 require(mansun)
 ```
+
+
+# Namespace
+
+Sometimes different packages may have the same function name.
+
+- **pkg::name**: Export specific function in a package
+- **pkg:::name**: Export internal variable/function in a package. 
+  Don't modify these items if you know what you are doing.
+
+```{r}
+lubridate::date("2016-05-14") # access without load whole package    
+library(lubridate, quietly = TRUE)
+date("2016-05-14")  # convert date. base::date is masked
+base::date()    # return system data and time
+```
+
+
 
 
 # Location of libraries

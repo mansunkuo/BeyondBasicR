@@ -35,10 +35,24 @@ Some additional knowledge and handy packages for using R as your data manipulati
 
 # Outline
 
-- Package (20 min)
-- Data I/O (20 min)
-- data.table (80 min)
-- Schedualing(40 min)
+- Package
+- Data I/O
+- data.table
+- Schedualing
+
+
+# Keyboard shortcuts of RStudio  
+
+[All RStudio keyboard shortcuts](https://support.rstudio.com/hc/en-us/articles/200711853-Keyboard-Shortcuts)
+
+Description                              | Windows & Linux    | Mac
+---------------------------------------- | ------------------ | ----------------------
+Show Keyboard Shortcut Reference         | Alt+Shift+K        | Option+Shift+K
+Attempt completion / Indent	             | Tab or Ctrl+Space  | Tab or Command+Space
+Run current line/selection               | Ctrl+Enter         | Command+Enter
+Comment/uncomment current line/selection | Ctrl+Shift+C       | Command+Shift+C
+Save active document                     | Ctrl+S             | Command+S
+Reindent lines                           | Ctrl+I             | Command+I
 
 
 

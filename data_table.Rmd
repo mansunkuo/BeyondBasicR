@@ -543,7 +543,9 @@ Default sorting method of base::order is still **shell** sorting.
 Use tables to list all data.table's in memory.
 
 ```{r}
-tables()
+all_tables = tables(silent=TRUE, width = 60)
+all_tables[, COLS := NULL]
+all_tables  # KEY column disappear in slides for unknown reason
 ```
 
 

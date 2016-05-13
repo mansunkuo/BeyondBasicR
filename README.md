@@ -6,6 +6,11 @@ Some additional knowledge and handy packages for using R as your data manipulati
 - [R Basic by Kyle Chung](https://github.com/everdark/rbasic)
 
 
+## Environment
+
+[R Installation Guide](http://mansunkuo.github.io/BeyondBasicR/install_R.html)
+
+
 ## How to use this slides
 
 PC/Mac:
