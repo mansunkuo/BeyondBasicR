@@ -3,12 +3,20 @@
     padding: 5% 7% 0 7%;
 }
 
+.Section {
+    padding-top: 6em;
+}
+
 .slide ol>li:before {
     padding-right: 0.5%;
 }
 
 .slide ol li:before, .slide ul li:before {
-    width: 7%;
+    width: 8%;
+}
+
+.slide .double ol li:before , .slide .double ul li:before {
+    width: 16%;
 }
 
 .slide {

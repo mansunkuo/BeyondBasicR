@@ -18,7 +18,7 @@ params:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# <br><br>Package {.white}
+# Package {.white .Section}
 
 <img src="img/bali.jpg" class="cover">
 
@@ -47,6 +47,7 @@ A typical R package may have following components:
 - Task view
     - [Cran Task Views](https://cran.r-project.org/web/views/)
     - [R Documentation](http://www.rdocumentation.org/)
+- [Awesome R](https://awesome-r.com/): A curated list of awesome R packages and tools
 - [R-blogger](http://www.r-bloggers.com/) for latest R news
 
 

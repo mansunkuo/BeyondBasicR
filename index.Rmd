@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# <br><br>Beyond Basic R {.white}
+# Beyond Basic R {.white .Section}
 
 <img src="img/bali.jpg" class="cover">
 
@@ -36,25 +36,10 @@ Some additional knowledge and handy packages for using R as your data manipulati
 # Outline
 
 - Package (20 min)
-    - How to find a package on internet
-    - Various way to install a package(Cran, Github and more) 
-    - How to read package manual
-- data.table (60 min)
-    - Concept of data.table
-    - How to read data with data.table
-    - Slicing, filtering and aggregation 
-    - Deep copy and shallow copy
-    - Sort and merge data
-
-# 
-
-- Data I/O(30 min)
-    - Tabular input
-    - JSON
-    - Databases(SQLite)
+- Data I/O (20 min)
+- data.table (80 min)
 - Schedualing(40 min)
-    - Task Scheduler(Windows)
-    - Crontab(Linux/Mac)
+
 
 
 ```{r child = 'package.Rmd'}
@@ -63,7 +48,7 @@ Some additional knowledge and handy packages for using R as your data manipulati
 ```{r child = 'dataio.Rmd'}
 ```
 
-```{r child = 'data_table.Rmd', eval=FALSE, include=FALSE}
+```{r child = 'data_table.Rmd'}
 ```
 
 ```{r child = 'schedualing.Rmd'}

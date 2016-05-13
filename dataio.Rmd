@@ -18,6 +18,6 @@ params:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# <br><br>Data I/O {.white}
+# Data I/O {.white .Section}
 
 <img src="img/bali.jpg" class="cover">
