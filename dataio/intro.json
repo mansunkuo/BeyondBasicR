@@ -1,0 +1,18 @@
+{
+  "teacher": "Mansun",
+  "isFullTime": false,
+  "hobby": ["Music", "Game"],
+  "license": null,
+  "lecture": [
+    {
+      "name": "BeyondRBasic",
+      "date": "2016-05-14",
+      "hour": 3
+    },
+    {
+      "name": "RCrawler101-2",
+      "date": "2016-01-09",
+      "hour": 3
+    }
+  ]
+}

@@ -28,7 +28,7 @@ str(args)
 
 # The original arguments
 command_args <- commandArgs(trailingOnly = TRUE)
-cat("args:")
+cat("args from command_args:")
 print(command_args)
 
 # Get system time
@@ -44,4 +44,4 @@ if (args$chat) {
 print(greeting)
 
 # Write to a text file
-writeChar(greeting, "now.txt")
+writeLines(greeting, "now.txt")
