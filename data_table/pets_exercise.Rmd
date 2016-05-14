@@ -1,0 +1,62 @@
+---
+title: "Answers of Pet Exercise"
+author: "Mansun Kuo"
+date: "May 14, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Here is a data.table contains four pets' name, species and weight:  
+
+```{r}
+library(data.table)
+pets = data.table(name = c("Senor", "Cookie", "Lucky", "Meow Meow"),
+                  species = c("dog", "dog", "bird", "cat"),
+                  weight = c(26, 13, 0.5, 6))
+```
+
+Please:
+
+1. Create a vector called **pet_weight** contains all pets' name and 
+
+```{r}
+pet_weight = pets[, .(name, weight)]
+pet_weight
+```
+
+
+2. Create a unit vector **senor_weight** contains Senor's weight
+
+```{r}
+senor_weight = pets[name == "Senor", "weight"]
+senor_weight
+```
+
+
+3. Create a data.table called **dogs_weight** that contains *name* and *weight* of all dogs in pets
+
+```{r}
+dogs_weight = pets[species == "dog", .(name, weight)]
+dogs_weight
+```
+
+
+4. Modify Cookie's weight as 15
+
+```{r}
+pets[name == "Cookie", weight := 15]
+pets
+```
+
+
+5. Create a data.table called **pet\_stat** that contains species, avg\_weight and count
+
+```{r}
+pet_stat = pets[, .(avg_weight = mean(weight), count = .N), by = "species"]
+pet_stat
+```
+

@@ -192,14 +192,15 @@ team[1, .(name, gender)]
 
 # Degeneration
 
-If you don' wrap a single column with list, 
+If you don' wrap a single expression with list in *j*, 
 the output will degenerate into a vector.
 
 ```{r}
 team[, gender]
 ```
 
-This behavior is very convenient if yiu want to subset value with *i*
+
+If you want to know how old is Wendy:
 
 ```{r}
 team[name == "Wendy", age]
@@ -306,9 +307,10 @@ team[, .(count = .N, mean_age = mean(age)), by = .(old = age >= 30, gender)]
 
 # Exercise
 
-Here is a data.table:
+Here is a data.table contains four pets' name, species and weight:  
 
 ```{r}
+library(data.table)
 pets = data.table(name = c("Senor", "Cookie", "Lucky", "Meow Meow"),
                   species = c("dog", "dog", "bird", "cat"),
                   weight = c(26, 13, 0.5, 6))
@@ -316,7 +318,7 @@ pets = data.table(name = c("Senor", "Cookie", "Lucky", "Meow Meow"),
 
 Please:
 
-1. Create a vector called **pet_name** contains pets' name
+1. Create a vector called **pet_weight** contains all pets' name and 
 1. Create a unit vector **senor_weight** contains Senor's weight
 1. Create a data.table called **dogs_weight** that contains *name* and *weight* of all dogs in pets
 1. Modify Cookie's weight as 15
@@ -325,16 +327,8 @@ Please:
 
 # Answer
 
-```{r}
-pets = data.table(name = c("Senor", "Cookie", "Lucky", "Meow Meow"),
-                  species = c("dog", "dog", "bird", "cat"),
-                  weight = c(26, 13, 0.5, 6))
-pet_name = pets[, .(name)]
-senor_weight = pets[name == "Senor", "weight"]
-dogs_weight = pets[species == "dog", .(name, weight)]
-pets[name == "Cookie", weight := 15]
-pet_stat = pets[, .(avg_weight = mean(weight), count = .N), by = "species"]
-```
+[Answers of Pet Exercise](data_table/pets_exercise.html)
+
 
 
 # Subset of data.table
@@ -490,8 +484,8 @@ side effect (modify a object that doesn't return by the function).
 <div class="double-flow">
 ```{r}
 deepf = function(dt) {
-    dt = copy(dt)
-    dt[, name := substr(name, 1, 1)]
+    tt = copy(dt)
+    tt[, name := substr(name, 1, 1)]
 }
 deepf(team)
 team$name
@@ -500,8 +494,8 @@ team$name
 <div class="double-flow">
 ```{r}
 shallowf = function(dt) {
-    
-    dt[, name := substr(name, 1, 1)]
+    tt = dt
+    tt[, name := substr(name, 1, 1)]
 }
 shallowf(team)
 team$name
@@ -509,6 +503,11 @@ team$name
 </div>
 </div>
 
+Notice that we modify *tt*'s name inside *shallowf* but the data.table *team*
+is also changed.
+
+
+# Feel good with side effect
 
 It is always a good idea letting others(or you in the future) know 
 what objects will be modified if your function have side effect. 
@@ -650,6 +649,8 @@ str(weather)
 
 # Strip numeric columns
 
+Remove special symbols in our data. 
+
 ```{r}
 cnames = colnames(weather)
 num_c = cnames[!cnames %in% c("city", "date", "datetime")]
@@ -683,7 +684,8 @@ weather[, date := as.Date(date)]
 
 # Hottest date in each city
 
-    
+Find hottest date in each city
+
 ```{r}
 hottest = weather[, .(datetime, Temperature, T.Max = max(Temperature)), 
                   keyby = city
