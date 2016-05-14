@@ -27,15 +27,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 A typical R package may have following components:
 
-- R code: Source codes written in R
-- Compiled code: Compiled C, C++ or Fortran code 
-- Package metadata: Metadata such as description, dependency, author, etc. 
-- Documentation: Package and function's usage
-- Vignettes: More detailed instruction about how to use this package
-- Tests: Unit tests for functions
-- Namespace: Define what functions import/export respect to other packages
-- External data: Additional dataset in this package
-- Demo: A interface to running some demonstration R scripts
+- **R code**: Source codes written in R
+- **Compiled code**: Compiled C, C++ or Fortran code 
+- **Package metadata**: Metadata such as description, dependency, author, etc. 
+- **Documentation**: Package and function's usage
+- **Vignettes**: More detailed instruction about how to use this package
+- **Tests**: Unit tests for functions
+- **Namespace**: Define what functions import/export respect to other packages
+- **External data**: Additional dataset in this package
+- **Demo**: A interface to running some demonstration R scripts
 
 
 # How to find a package you want
@@ -58,8 +58,8 @@ A typical R package may have following components:
     - Return error if package not found
 
 ```{r}
-library(jsonlite)
-library("jsonlite")
+library(argparser)
+library("argparser")
 ```
 
 - *require*: Just like *library* but return warning if package not found
@@ -71,7 +71,7 @@ require(mansun)
 
 # Namespace
 
-Sometimes different packages may have the same function name.
+Sometimes functions in different packages may have the same name.
 
 - **pkg::name**: Export specific function in a package
 - **pkg:::name**: Export internal variable/function in a package. 
@@ -89,14 +89,14 @@ base::date()    # return system data and time
 
 # Location of libraries
 
-- User specific library: *R_LIBS_USER*
+- **User specific library**: *R_LIBS_USER*
     - Libraries under user's home directory
     - Only can be accessed by the user in most situation.
 
 - Common library: libraries for all users. Need administrator permissoion.
-    - System library: *R_HOME/library*
+    - **System library**: *R_HOME/library*
         - Comes with R installation
-    - Site library: 
+    - **Site library**: 
         - Configured in *R_HOME/etc/Rprofile.site*
 
 ```{r}
@@ -134,6 +134,8 @@ lpath <- .libPaths()
 
 # Change Privilege(Linux/Mac)
 
+Use chown and chmod to change owner and write permission of your install path.
+
 - [chown](https://en.wikipedia.org/wiki/Chown): Change owner
 
 
@@ -161,13 +163,13 @@ chmod u+w /usr/local/lib/R/site-library
 
 - [install.packages](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/install.packages.html)
     - Download and install packages from CRAN-like repositories or from local files
-    - Type *? install.packages* to get further information
+    - Type *?install.packages* to get further information
     - Packages are installed in the first element of *.libpaths()* if *lib* ins missing 
     - In RStudio: Tools -> Install Packages...
     - Be careful of system dependency
         - [Rtools](https://cran.r-project.org/bin/windows/Rtools/)(Windows), Java, XML, MySQL, ...
 
-Install multiple files: 
+Install multiple packages: 
 
 ```r
 install.packages(c("argparser", "jsonlite"), 
@@ -181,6 +183,18 @@ Install development version of data.table:
 install.packages("data.table", type = "source",
     repos = "https://Rdatatable.github.io/data.table")
 ```
+
+
+# Install package with RStudio
+
+Yun can even using RStudio to install a package into system library or site library.
+
+<img src="img/install_package.png" width="90%">
+
+
+# Exercise
+
+Try to install package **argparser** in system library or site library.
 
 
 # Install a local files
