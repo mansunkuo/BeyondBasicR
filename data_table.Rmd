@@ -318,7 +318,7 @@ pets = data.table(name = c("Senor", "Cookie", "Lucky", "Meow Meow"),
 
 Please:
 
-1. Create a vector called **pet_weight** contains all pets' name and 
+1. Create a vector called **pet_weight** contains all pets' weight 
 1. Create a unit vector **senor_weight** contains Senor's weight
 1. Create a data.table called **dogs_weight** that contains *name* and *weight* of all dogs in pets
 1. Modify Cookie's weight as 15

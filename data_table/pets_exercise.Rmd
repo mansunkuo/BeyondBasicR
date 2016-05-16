@@ -21,10 +21,10 @@ pets = data.table(name = c("Senor", "Cookie", "Lucky", "Meow Meow"),
 
 Please:
 
-1. Create a vector called **pet_weight** contains all pets' name and 
+1. Create a vector called **pet_weight** contains all pets' weight
 
 ```{r}
-pet_weight = pets[, .(name, weight)]
+pet_weight = pets$weight
 pet_weight
 ```
 
@@ -32,7 +32,7 @@ pet_weight
 2. Create a unit vector **senor_weight** contains Senor's weight
 
 ```{r}
-senor_weight = pets[name == "Senor", "weight"]
+senor_weight = pets[name == "Senor", weight]
 senor_weight
 ```
 
